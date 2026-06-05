@@ -29,7 +29,7 @@ CMD ["uv", "run", "pytest"]
 # ─── Builder: production deps only ────────────────────────────────────────────
 FROM base AS builder
 
-COPY pyproject.toml uv.lock* ./
+COPY pyproject.toml uv.lock* LICENSE ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --no-dev
 
