@@ -5,15 +5,6 @@ services:
       target: prod
     restart: unless-stopped
 
-  dev:
-    build:
-      context: .
-      target: dev
-    volumes:
-      - .:/app
-      - venv:/app/.venv
-    command: ["uv", "run", "pytest", "-v", "--tb=short"]
-
   test:
     build:
       context: .

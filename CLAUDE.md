@@ -14,8 +14,8 @@ A base template for Python applications. Clone this repo and replace
 - **Ruff** — linting and formatting (replaces flake8, isort, black)
 - **Mypy** — strict static type checking
 - **Pytest** — test runner with coverage
-- **Bandit + pip-audit** — security scanning
-- **GitHub Actions** — CI (lint, test, security, Docker build) + CodeQL
+- **pip-audit** — dependency vulnerability scanning (CI); **Bandit** available locally
+- **GitHub Actions** — CI (lint, test, pip-audit, Docker build) + CodeQL for SAST
 
 ## Repository Layout
 
@@ -48,7 +48,7 @@ uv run python -m app.main
 # Run tests
 uv run pytest
 
-# Run tests with coverage
+# Run tests with coverage (coverage is not on by default — add flags explicitly)
 uv run pytest --cov=src --cov-report=term-missing
 
 # Lint
@@ -103,7 +103,7 @@ dependencies, and configures extensions automatically.
   environments and in CI.
 - The production Docker image copies only `.venv` and `src/` from the builder
   stage, keeping the final image small and without build tooling.
-- Non-root user (`appuser`) is used in the production container.
+- Non-root user (`appuser`) is used in the production container; `devuser` in the dev container.
 
 ## Testing Conventions
 

@@ -13,14 +13,16 @@ ENV UV_COMPILE_BYTECODE=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# ─── Dev: all deps including dev tools ────────────────────────────────────────
+# ─── Dev: non-root user; uv auto-syncs on first `uv run` ─────────────────────
 FROM base AS dev
 
-COPY pyproject.toml uv.lock* ./
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --all-groups
+RUN useradd --create-home --uid 1000 devuser \
+    && mkdir -p /app/.venv \
+    && chown -R devuser:devuser /app
+USER devuser
 
-COPY . .
+COPY --chown=devuser:devuser pyproject.toml uv.lock* ./
+COPY --chown=devuser:devuser . .
 
 CMD ["uv", "run", "pytest"]
 

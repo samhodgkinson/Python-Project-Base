@@ -19,6 +19,7 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.13"
+          enable-cache: true
 
       - name: Install dependencies
         run: uv sync --all-groups
@@ -45,12 +46,13 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: ${{ matrix.python-version }}
+          enable-cache: true
 
       - name: Install dependencies
         run: uv sync --all-groups
 
-      - name: Run tests
-        run: uv run pytest --cov-report=xml
+      - name: Run tests with coverage
+        run: uv run pytest --cov=src --cov-report=xml
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4
@@ -67,27 +69,13 @@ jobs:
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.13"
+          enable-cache: true
 
       - name: Install dependencies
         run: uv sync --all-groups
 
-      - name: Bandit (static security analysis)
-        run: uv run bandit -r src/ -c pyproject.toml -f json -o bandit-report.json
-        continue-on-error: true
-
-      - name: Bandit (console output)
-        run: uv run bandit -r src/ -c pyproject.toml
-
       - name: pip-audit (dependency vulnerabilities)
         run: uv run pip-audit
-
-      - name: Upload Bandit report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bandit-report
-          path: bandit-report.json
-          if-no-files-found: ignore
 
   docker:
     name: Docker Build
@@ -104,8 +92,8 @@ jobs:
           context: .
           target: dev
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=dev
+          cache-to: type=gha,mode=max,scope=dev
 
       - name: Build production image
         uses: docker/build-push-action@v6
@@ -113,5 +101,5 @@ jobs:
           context: .
           target: prod
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=prod
+          cache-to: type=gha,mode=max,scope=prod

@@ -14,7 +14,7 @@
     "source=${devcontainerId}-venv,target=/app/.venv,type=volume"
   ],
   "postCreateCommand": "uv sync --all-groups",
-  "remoteUser": "root",
+  "remoteUser": "devuser",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
