@@ -1,18 +1,16 @@
 # Python Project Base
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/samhodgkinson/Python-Project-Base?quickstart=1)
+
 A ready-to-code Python template. Open in VS Code, click **Reopen in Container**, and you have a fully configured Python environment — no local Python installation required.
 
 Everything is pre-wired: testing, linting, type checking, debugging, and CI that runs on every pull request.
 
-## Prerequisites
-
-- [VS Code](https://code.visualstudio.com/)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-
-That's it. No Python, no pip, no virtual environments to manage yourself.
-
 ## Getting started
+
+### Local (VS Code + Docker)
+
+**Prerequisites:** [VS Code](https://code.visualstudio.com/) · [Docker Desktop](https://www.docker.com/products/docker-desktop/) · [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 1. Click **Use this template** → **Create a new repository** on GitHub
 2. Clone your new repository and open the folder in VS Code

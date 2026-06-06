@@ -15,10 +15,6 @@
   ],
   "postCreateCommand": "uv sync --all-groups",
   "remoteUser": "devuser",
-  "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
   "customizations": {
     "vscode": {
       "extensions": [
