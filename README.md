@@ -1,133 +1,130 @@
-# Python-Project-Base
+# Python Project Base
 
-A production-ready base template for Python projects. Includes Docker, dev
-container, uv package management, linting, type checking, testing, and
-GitHub Actions CI with security scanning.
+A ready-to-code Python template. Open in VS Code, click **Reopen in Container**, and you have a fully configured Python environment — no local Python installation required.
 
-## Stack
+Everything is pre-wired: testing, linting, type checking, debugging, and CI that runs on every pull request.
 
-| Tool | Purpose |
-|------|---------|
-| [Python 3.13](https://docs.python.org/3.13/) | Language runtime |
-| [uv](https://docs.astral.sh/uv/) | Package manager & virtual envs |
-| [Ruff](https://docs.astral.sh/ruff/) | Linting & formatting |
-| [Mypy](https://mypy.readthedocs.io/) | Static type checking |
-| [Pytest](https://docs.pytest.org/) | Testing |
-| [Bandit](https://bandit.readthedocs.io/) | Security static analysis |
-| [pip-audit](https://pypi.org/project/pip-audit/) | Dependency vulnerability scanning |
-| [Docker](https://docs.docker.com/) | Multi-stage container builds |
+## Prerequisites
 
-## Quick Start
+- [VS Code](https://code.visualstudio.com/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-### Local Development (with uv)
+That's it. No Python, no pip, no virtual environments to manage yourself.
+
+## Getting started
+
+1. Click **Use this template** → **Create a new repository** on GitHub
+2. Clone your new repository and open the folder in VS Code
+3. VS Code will prompt **"Reopen in Container"** — click it
+   - (Or: Command Palette → `Dev Containers: Reopen in Container`)
+4. The container builds on first open (~1–2 min). Dependencies install automatically.
+5. Open a terminal inside VS Code and run the tests to confirm everything works:
 
 ```bash
-# Clone and set up
-git clone https://github.com/samhodgkinson/Python-Project-Base.git
-cd Python-Project-Base
-
-# Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Install all dependencies and create .venv
-uv sync --all-groups
-
-# Run the app
-uv run python -m app.main
-
-# Run tests
 uv run pytest
 ```
 
-### VS Code Dev Container
+You should see all tests pass. The environment is ready.
 
-1. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-2. Open the repository in VS Code
-3. Click **"Reopen in Container"** when prompted (or via Command Palette)
-
-The container builds from the `dev` Dockerfile target with all tools and
-VS Code extensions pre-configured.
-
-### Docker
+## Running tests
 
 ```bash
-# Run tests in the dev container
-docker compose run --rm test
+# Run tests
+uv run pytest
 
-# Run the production app
-docker compose up app
-
-# Build production image only
-docker build --target prod -t myapp:latest .
+# Run tests with a coverage report
+uv run pytest --cov=src --cov-report=term-missing
 ```
 
-## Project Structure
+The VS Code Testing panel (flask icon in the sidebar) also discovers and runs tests with a click.
 
-```
-.
-├── src/
-│   └── app/
-│       ├── __init__.py
-│       └── main.py          # Entry point
-├── tests/
-│   └── test_main.py
-├── .devcontainer/
-│   └── devcontainer.json    # VS Code dev container
-├── .github/
-│   └── workflows/
-│       ├── ci.yml           # Lint, test, security, Docker build
-│       └── codeql.yml       # CodeQL security analysis
-├── .vscode/
-│   ├── settings.json        # Editor settings
-│   ├── extensions.json      # Recommended extensions
-│   └── launch.json          # Debug configurations
-├── Dockerfile               # Multi-stage: dev / prod
-├── docker-compose.yml
-└── pyproject.toml           # All config: uv, ruff, mypy, pytest, bandit
-```
+## Writing code
 
-## Development Workflow
+Put your code in `src/app/` and tests in `tests/`. The editor is pre-configured to:
+
+- **Format on save** — Ruff fixes style automatically when you save a file
+- **Highlight type errors** — Mypy flags type problems as you type
+- **Run tests** — from the Testing panel or the terminal
+- **Debug** — F5 launches the debugger (see the pre-configured launch profiles in the Run panel)
+
+## Adding dependencies
+
+Inside the container terminal:
 
 ```bash
-# Add a dependency
+# Add a runtime dependency
 uv add requests
 
-# Add a dev dependency
+# Add a dev-only dependency (testing tools, linters, etc.)
 uv add --group dev pytest-asyncio
 
-# Lint
-uv run ruff check .
-
-# Format
-uv run ruff format .
-
-# Type check
-uv run mypy src/
-
-# Security scan
-uv run bandit -r src/ -c pyproject.toml
-uv run pip-audit
+# Always commit the lock file after changing dependencies
+git add uv.lock && git commit -m "Add requests"
 ```
 
-Always commit `uv.lock` when dependencies change — it ensures reproducible
-installs in CI and other environments.
+The `uv.lock` file pins every dependency to an exact version so CI and other developers get identical environments.
 
-## GitHub Actions
+## Using this as a base for a new project
 
-| Workflow | Triggers | Jobs |
-|----------|----------|------|
-| **CI** | push/PR to `main` | Lint, Test (with coverage), Security scan, Docker build |
-| **CodeQL** | push/PR to `main`, weekly | Python security analysis |
+1. **Rename the package** — move `src/app/` to `src/<your-package>/` and update `pyproject.toml`:
 
-## Using This as a Template
+   ```toml
+   [project]
+   name = "your-project"
 
-1. **Rename the package**: update `src/app/` to your package name and update
-   `pyproject.toml` (`name`, `[tool.hatch.build.targets.wheel]`).
-2. **Update dependencies**: add your runtime deps with `uv add <pkg>`.
-3. **Write your code** in `src/<package>/`.
-4. **Write tests** in `tests/`.
-5. **Commit `uv.lock`**: run `uv lock` and commit the lock file.
-6. **Push** — CI will run automatically.
+   [tool.hatch.build.targets.wheel]
+   packages = ["src/your-package"]
+   ```
+
+2. **Replace the example code** in `src/<your-package>/main.py` with your own
+
+3. **Write tests** in `tests/test_<module>.py` mirroring your source layout
+
+4. **Push** — CI runs automatically on every pull request
+
+## CI — what runs on every pull request
+
+| Check | What it does |
+|-------|-------------|
+| Lint & Format | Ruff checks code style |
+| Type check | Mypy strict mode |
+| Tests | pytest with coverage |
+| Security | pip-audit scans dependencies for known vulnerabilities |
+| Docker build | Builds both the dev and production images |
+| CodeQL | GitHub's security analysis (also runs weekly) |
+
+Set up **branch protection rules** on `main` (GitHub → Settings → Branches) to require all checks to pass before a PR can be merged.
+
+## Production Docker image
+
+The `Dockerfile` has two targets:
+
+- **`dev`** — used by the dev container and `docker compose run --rm test`
+- **`prod`** — a minimal image with only runtime dependencies, running as a non-root user
+
+```bash
+# Run the test suite in Docker (no local setup needed)
+docker compose run --rm test
+
+# Build and run the production image
+docker build --target prod -t myapp:latest .
+docker run myapp:latest
+```
+
+## Project layout
+
+```
+src/app/            ← application source code (rename app/ to your package name)
+tests/              ← tests (mirror src/ structure)
+.devcontainer/      ← VS Code dev container config
+.github/workflows/  ← CI pipelines (ci.yml, codeql.yml)
+.vscode/            ← editor settings, extensions, debug configs
+Dockerfile          ← dev and production images
+docker-compose.yml  ← test and app services
+pyproject.toml      ← all project config (uv, ruff, mypy, pytest)
+uv.lock             ← locked dependencies — always commit this
+```
 
 ## License
 
