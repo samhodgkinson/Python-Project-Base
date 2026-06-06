@@ -1,5 +1,7 @@
 # Python Project Base
 
+[![CI](https://github.com/samhodgkinson/Python-Project-Base/actions/workflows/ci.yml/badge.svg)](https://github.com/samhodgkinson/Python-Project-Base/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/samhodgkinson/Python-Project-Base/actions/workflows/codeql.yml/badge.svg)](https://github.com/samhodgkinson/Python-Project-Base/actions/workflows/codeql.yml)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/samhodgkinson/Python-Project-Base?quickstart=1)
 
 A ready-to-code Python template. Open in VS Code, click **Reopen in Container**, and you have a fully configured Python environment — no local Python installation required.
