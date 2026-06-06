@@ -29,11 +29,16 @@ CMD ["uv", "run", "pytest"]
 # ─── Builder: production deps only ────────────────────────────────────────────
 FROM base AS builder
 
-COPY pyproject.toml uv.lock* LICENSE ./
+# Install external deps first (cached when only src/ changes)
+COPY pyproject.toml uv.lock* ./
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --no-dev --no-install-project
+
+# Install the project itself (hatchling reads README.md + LICENSE at build time)
+COPY README.md LICENSE ./
+COPY src/ ./src/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --no-dev
-
-COPY src/ ./src/
 
 # ─── Production: minimal runtime image ────────────────────────────────────────
 FROM python:${PYTHON_VERSION}-slim-bookworm AS prod
